@@ -17,11 +17,43 @@ module "s3-kms-glacier" {
     }
   }
 }
+module "secrets-manager-3" {
+
+  source = "./modules"
+
+  secrets = {
+    secret-binary = {
+      description             = "This is a binary secret"
+      name                    = "secret-rohan"
+      description             = "Another binary secret"
+      secret_binary           = <<EOT
+      "-----BEGIN OPENSSH PRIVATE KEY-----
+-----END OPENSSH PRIVATE KEY-----"
+EOT
+      recovery_window_in_days = 0
+      tags = {
+        app = "web"
+      }
+    }
+  }
+
+  tags = {
+    Owner       = "DevOps team"
+    Environment = "dev"
+    Terraform   = true
+  }
+}
+/*
 module "secret_manager" {
  source = "./modules"
- secret_name = "testing/private"
+ secret_name = "nibasss"
+ secret_string = ""
 }
-
+*/
 output "s3-bucket" {
  value = module.s3-kms-glacier
+}
+
+output "secret_arn" {
+ value = module.secrets-manager-3
 }
